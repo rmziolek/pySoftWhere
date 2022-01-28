@@ -1,0 +1,46 @@
+plan...
+
+sms.contact_map
+
+sms.spherical.cluster
+ ... report cluster_sizes, cluster_ids (can work out the unimers by finding the symmetric difference = union - intersection)
+
+sms.spherical.intrinsic_density
+ ... report spherical (with check for main micelle), planar, spherical cluster (could do a fixed size version too)
+  ... needs to return core radius, profiles, coordination number
+
+
+sms.spherical.intrinsic_internal_relaxtion
+     ... report time series...
+
+sms.spherical.intrinsic_tracking
+ ... report time series of position of molecule(s)
+
+sms.spherical.radius_of_gyration
+  .. for largest micelle or clusters
+
+sms.spherical.hydrodynamic_radius
+ .. same as rog
+
+sms.spherical.eccentricity
+ .. same as rog
+
+sms.spherical.intrinsic_mobility
+
+sms.spherical.intrinsic_order_parameters
+
+sms.planar.intrinsic_density
+
+sms.planar.intrinsic_tracking
+ ...this can then be combined with any normal calculation in mda to give intrinsic profiles, etc
+
+or...
+
+sms.planar.intrinsic_quantity
+...give two time series of a intrinsic positions and associated quantity...
+
+sms.planar.intrinsic_water_hbonds
+
+sms.planar.intrinsic_van_hove
+
+sms.planar.intrinsic_order_parameters.first_order, etc.
