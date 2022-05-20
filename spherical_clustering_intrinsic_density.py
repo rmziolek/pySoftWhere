@@ -150,7 +150,7 @@ for ts in u.trajectory[start_::skip_]:
             micelle_hydrophilic=micelle.select_atoms('resname TX4 and prop mass > 2 and not name C1D C1C C1B C1A C1E C1F C2 C3A C3B C4 C5 C6C C6B C6A and resid '+str(' '.join(list([str(i) for i in cluster]))))
             micelle_hydrophobic=micelle.select_atoms('resname TX4 and prop mass > 2 and name C1D C1C C1B C1A C1E C1F C2 C3A C3B C4 C5 C6C C6B C6A and resid '+str(' '.join(list([str(i) for i in cluster]))))
             
-            micelle.wrap()
+            micelle.unwrap()
             
             com = sum([(1/(sum(micelle.masses)))*micelle.masses[i]*micelle.positions[i] for i in range(len(micelle))])
             print(com)

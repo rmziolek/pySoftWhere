@@ -45,10 +45,14 @@ class largest_cluster:
             G.add_edge(int(pair[0]),int(pair[1]))
 
 
-        clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
+        clusters=[h for h in nx.connected_components(G)]
 
-        cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
+        cluster_sizes=[len(h) for h in nx.connected_components(G)]
 
+        #clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
+
+        #cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
+        
         no_ones=len(self.cluster_atoms)-sum(cluster_sizes)
 
         [cluster_sizes.append(1) for i in range(no_ones)]
@@ -107,10 +111,13 @@ class cluster_distribution:
         for pair in pairs:
             G.add_edge(int(pair[0]),int(pair[1]))
 
+        clusters=[h for h in nx.connected_components(G)]
 
-        clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
+        cluster_sizes=[len(h) for h in nx.connected_components(G)]
 
-        cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
+        #clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
+
+        #cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
 
         no_ones=len(self.cluster_atoms)-sum(cluster_sizes)
 

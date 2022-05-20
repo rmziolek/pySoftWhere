@@ -9,7 +9,7 @@ class spherical_intrinsic_density:
     """Returns the intrinsic density of given species in a quasispherical nanostructure.  """ 
 
     
-    def __init__(self, u, cluster_atoms, cluster_cutoff, micelle_selection, core_selection, measurement_selction, frame):
+    def __init__(self, u, cluster_atoms, cluster_cutoff, micelle_selection, core_selection, measurement_selection, frame):
 
         self.u = u
         self.cluster_atoms = cluster_atoms
@@ -44,7 +44,7 @@ class spherical_intrinsic_density:
 
 
 
-
+        return self.cluster_resids
 
 
 
