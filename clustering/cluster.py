@@ -1,139 +1,204 @@
 import MDAnalysis as mda
 import networkx as nx
 import MDAnalysis.analysis.distances
+import scipy.stats as stats
+import numpy as np
 
-class largest_cluster:
-    """Returns the resids of molecules in the largest cluster in the system (starting from 0!). THIS ACTUALLY RETURNS ANYTHING BIGGER THAN 1... FIX  """ 
-
+class find_largest_cluster:
     
-    def __init__(self, u, cluster_atoms, cluster_cutoff,frame):
-
+    def __init__(self,u,
+                      frame,
+                      selection,
+                      cutoff_distance=10, 
+                      define_clustering_atoms=False): #name of single atom
+    
         self.u = u
-        self.cluster_atoms = cluster_atoms
-        self.cluster_cutoff = cluster_cutoff
-        
         self.frame = frame
+        self.selection = selection
+        self.cutoff_distance = cutoff_distance
+        self.cluster_atoms = define_clustering_atoms
+        
        
         self._cluster_gt()
-
-        
+    
     def _cluster_gt(self):
-        
-        
+
+
         """
         do the clustering
         """
-#        for ts in self.u.trajectory[self.frame:self.frame+1:]: 
-        ts=self.u.trajectory[self.frame]
-        cluster_sizes=[]
 
-        box_ = self.u.dimensions
+        ts =  self.u.trajectory[self.frame]
+    
+        polymers=self.u.select_atoms(self.selection)
+    
+        if  self.cluster_atoms==False:
+            self.cluster_atoms='name '+(polymers.atoms.names[0]) 
+        else:
+            pass    
+    
+        cluster_atoms_sel = polymers.select_atoms(self.cluster_atoms)
 
-        dist_array=mda.analysis.distances.contact_matrix(self.cluster_atoms.atoms.positions,cutoff=self.cluster_cutoff,box=box_)
-        pairs=[]
-        source_id=0
-        for source in dist_array:
+        dist_array=MDAnalysis.analysis.distances.contact_matrix(cluster_atoms_sel.atoms.positions,
+                                                            cutoff=self.cutoff_distance,
+                                                            box=self.u.dimensions)
 
-            for target in range(len(dist_array)):
-                if source[target]==True and source_id!=target:
-                    pairs.append([source_id,target])
-
-            source_id+=1
-
-        G=nx.Graph()
-        for pair in pairs:
-            G.add_edge(int(pair[0]),int(pair[1]))
-
-
+        G = nx.from_numpy_matrix(dist_array)
         clusters=[h for h in nx.connected_components(G)]
-
-        cluster_sizes=[len(h) for h in nx.connected_components(G)]
-
-        #clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
-
-        #cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
-        
-        no_ones=len(self.cluster_atoms)-sum(cluster_sizes)
-
-        [cluster_sizes.append(1) for i in range(no_ones)]
-        
-        self.clusters=clusters
-        
+    
+        for c in clusters:
+            if len(c)==max([len(c_) for c_ in clusters]):
+                largest_cluster_resids = [i+1 for i in  c]
+            
+        self.largest_cluster_resids = largest_cluster_resids
+    
     def __call__(self):
-        
-        """cluster.
         """
+        .
+        """     
+        return self.largest_cluster_resids
+
+class find_all_clusters:
+    
+    def __init__(self,u,
+                      frame,
+                      selection,
+                      cutoff_distance=10, 
+                      define_clustering_atoms=False): #name of single atom
+    
+        self.u = u
+        self.frame = frame
+        self.selection = selection
+        self.cutoff_distance = cutoff_distance
+        self.cluster_atoms = define_clustering_atoms
+        
+       
+        self._cluster_gt()
+    
+    def _cluster_gt(self):
+
+
+        """
+        do the clustering
+        """
+
+        ts =  self.u.trajectory[self.frame]
+    
+        polymers=self.u.select_atoms(self.selection)
+    
+        if  self.cluster_atoms==False:
+            self.cluster_atoms='name '+(polymers.atoms.names[0]) 
+        else:
+            pass    
+    
+        cluster_atoms_sel = polymers.select_atoms(self.cluster_atoms)
+
+        dist_array=MDAnalysis.analysis.distances.contact_matrix(cluster_atoms_sel.atoms.positions,
+                                                            cutoff=self.cutoff_distance,
+                                                            box=self.u.dimensions)
+
+        G = nx.from_numpy_matrix(dist_array)
+        clusters=[list(h) for h in nx.connected_components(G)]
+    
+        self.clusters = clusters
+    
+    def __call__(self):
+        """
+        .
+        """     
         return self.clusters
 
 
-###################
-
-
-class cluster_distribution:
-    """Returns the number of molecules in each cluster""" 
-
+class make_cluster_whole:
     
-    def __init__(self, u, cluster_atoms, cluster_cutoff,frame):
-
+    def __init__(self,u,
+                       frame,
+                       cluster_resids,
+                       core_selection,  #need to add  -> easier to do it now
+                       shell_selection, #need to add- > easier to do it now 
+                       solvent=False): 
+    
         self.u = u
-        self.cluster_atoms = cluster_atoms
-        self.cluster_cutoff = cluster_cutoff
-        
         self.frame = frame
+        self.cluster_resids = cluster_resids
+        self.core_selection = core_selection
+        self.shell_selection = shell_selection
+        self.solvent = solvent 
        
-        self._cluster_gt()
-
+        self._make_whole()
         
-    def _cluster_gt(self):
+    def _make_whole(self):
         
+        self.u.trajectory[self.frame]
         
-        """
-        do the clustering
-        """
-#        for ts in self.u.trajectory[self.frame:self.frame+1:]: 
-        ts=self.u.trajectory[self.frame]
-        cluster_sizes=[]
-
-        box_ = self.u.dimensions
-
-        dist_array=mda.analysis.distances.contact_matrix(self.cluster_atoms.atoms.positions,cutoff=self.cluster_cutoff,box=box_)
-        pairs=[]
-        source_id=0
-        for source in dist_array:
-
-            for target in range(len(dist_array)):
-                if source[target]==True and source_id!=target:
-                    pairs.append([source_id,target])
-
-            source_id+=1
-
-        G=nx.Graph()
-        for pair in pairs:
-            G.add_edge(int(pair[0]),int(pair[1]))
-
-        clusters=[h for h in nx.connected_components(G)]
-
-        cluster_sizes=[len(h) for h in nx.connected_components(G)]
-
-        #clusters=[h.nodes for h in nx.connected_component_subgraphs(G)]
-
-        #cluster_sizes=[len(h) for h in nx.connected_component_subgraphs(G)]
-
-        no_ones=len(self.cluster_atoms)-sum(cluster_sizes)
-
-        [cluster_sizes.append(1) for i in range(no_ones)]
+        cluster_sel = self.u.select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
+        core_sel = self.u.select_atoms(self.core_selection).select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
+        shell_sel = self.u.select_atoms(self.shell_selection).select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
         
-        self.clusters=clusters
+        cluster_atoms_positions=cluster_sel.positions.copy()
+        core_sel_atoms_positions=core_sel.positions.copy()
+        shell_sel_atoms_positions=shell_sel.positions.copy()
         
-        self.cluster_sizes = cluster_sizes
-         
+    
+    
+            
+        box=self.u.dimensions
+    
+        for dimension in range(0,3):
+    
+            y = stats.binned_statistic(cluster_sel.positions[:,dimension],
+                                         cluster_sel.positions[:,dimension],
+                                         bins=np.arange(-50,box[0]+50,10),
+                                         statistic='count').statistic
+    
+            a = stats.binned_statistic(cluster_sel.positions[:,dimension],
+                                       cluster_sel.positions[:,dimension],
+                                       bins=np.arange(-50,box[0]+50,10),
+                                       statistic='count').bin_edges
+    
+            move_above=False
+            move_water=False
+    
+            filled=np.where(y!=0)[0]
+    
+            for i in range(len(filled)-1):
+                if filled[i]!=filled[i+1]-1:
+                    move_above = a[filled[i+1]]
+                    move_lower_bound=a[filled[i]]
+                    move_water=(move_lower_bound+move_above)/2
+            ####
+    
+            if move_above!=False:
+                for atom in range(len(cluster_atoms_positions)):
+                    if cluster_atoms_positions[atom][dimension]>move_above:
+                        cluster_atoms_positions[atom][dimension]=cluster_atoms_positions[atom][dimension]-box[dimension]
+    
+                for atom in range(len(core_sel_atoms_positions)):
+                    if core_sel_atoms_positions[atom][dimension]>move_above:
+                        core_sel_atoms_positions[atom][dimension]=core_sel_atoms_positions[atom][dimension]-box[dimension]
+                
+                if self.solvent==False:
+    
+                    for atom in range(len(shell_sel_atoms_positions)):
+                        if shell_sel_atoms_positions[atom][dimension]>move_above:
+                            shell_sel_atoms_positions[atom][dimension]=shell_sel_atoms_positions[atom][dimension]-box[dimension]
+    
+    
+            if self.solvent!=False:
+                for atom in range(len(shell_sel_atoms_positions)):
+                    if shell_sel_atoms_positions[atom][dimension]>move_water:
+                        shell_sel_atoms_positions[atom][dimension]=shell_sel_atoms_positions[atom][dimension]-box[dimension]
+            else:
+                solvent_atoms_positions=0
+                
+        self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions,self.solvent_atoms_positions = cluster_atoms_positions,core_sel_atoms_positions,shell_sel_atoms_positions,solvent_atoms_positions
+     
+
+
+
     def __call__(self):
-        
-        """cluster.
         """
-        return self.cluster_sizes
+        .
+        """     
 
-
-
-
-
+        return self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions,self.solvent_atoms_positions
