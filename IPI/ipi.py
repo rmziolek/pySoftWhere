@@ -9,103 +9,166 @@ from itertools import product as product
 class ipi:
 
 
-    def __init__(self,
-                    u,
-                    cluster_resids,
-                    cluster_atoms_positions,
-                    core_sel_atoms_positions,
-                    shell_sel_atoms_positions,
-                    frame=-1,
-                    no_bins=31,
-                    no_random_points=10000,
-                    normalisation_run=False):
-
+    def __init__(self,u,frame,
+                             core_sel,
+                             density_sel,
+                             interface,
+                             no_bins,
+                             cluster=True,
+                             recombine=True,
+                            interpolate_interface=False):
         self.u = u
         self.frame = frame
+        self.core_sel = core_sel
+        self.density_sel = density_sel       
+        self.interface = interface
         self.no_bins = no_bins
-        self.cluster_resids = cluster_resids
-        self.cluster_atoms_positions=cluster_atoms_positions
-        self.core_sel_atoms_positions=core_sel_atoms_positions
-        self.shell_sel_atoms_positions=shell_sel_atoms_positions
-        self.no_random_points=no_random_points
-        self.normalisation_run=normalisation_run
+        self.cluster = cluster
+        self.recombine = recombine
+        self.interpolate_interface = interpolate_interface
+ 
+        self._intrinsic_density()
         
-        self._spherical_intrinsic_density()
-        
-    def _spherical_intrinsic_density(self):
+    def _intrinsic_density(self):
 
-        def cartesian_to_spherical(xyz):
-            ptsnew = np.hstack((xyz, np.zeros(xyz.shape)))
-            xy = xyz[:,0]**2 + xyz[:,1]**2
-            ptsnew[:,3] = np.sqrt(xy + xyz[:,2]**2)
-            ptsnew[:,4] = np.arctan2(np.sqrt(xy), xyz[:,2]) # for elevation angle defined from Z-axis down
-            #ptsnew[:,4] = np.arctan2(xyz[:,2], np.sqrt(xy)) # for elevation angle defined from XY-plane up
-            ptsnew[:,5] = np.arctan2(xyz[:,1], xyz[:,0])
-            return ptsnew
+        '''
+        u:   MDAnalysis Universe
         
-        self.u.trajectory[self.frame]
-        box_=self.u.dimensions
+        frame: MDAnalysis trajectory frame (int)
+           
+        core_sel: the atom selection that describes the reference object (membrane, slab, etc.)
         
-        cluster_sel = self.u.select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
+        density_sel: the atom selection for which the intrinsic density is to be calculated
         
-        com = sum([(1/(sum(cluster_sel.masses)))*cluster_sel.masses[i]*self.cluster_atoms_positions[i] for i in range(len(cluster_sel))])
+        interface: "Lower" or "Upper" interface of core_sel to calculate intrinsic density from 
         
-        ####calc spherical polars of core
-        core_array = cartesian_to_spherical(self.core_sel_atoms_positions-com)
+        no_bins: number of bins in each lateral dimension (larger number gives finer grid) see 
+        Ziolek et al Langmuir 2019 SI for discussion of grid size effects
         
-        r_core_tmp=core_array[:,3]
-        theta_core_tmp=core_array[:,4]
-        phi_core_tmp=core_array[:,5] 
+        cluster: check whether any core_sel molecules have diffused out of the main structure 
         
-        ####calc spherical polars of shell
+        recombine: slow step that recombines the core_sel structure if it's split over the z PBC
+    
+        interpolate_interface: simple linear interpolation of the intrinsic interface, useful 
+                              for patchy monolayers, etc. (like Ziolek et al Langmuir 2019 )
+        '''
+    
+        self.u.trajectory[self.frame] 
+    
+        ### clustering check  
         
-        if self.normalisation_run == False:
-            shell_array = cartesian_to_spherical(self.shell_sel_atoms_positions-com)
+        core = self.u.select_atoms(self.core_sel)
+        
+        if self.cluster==True:
+                
+            cutoff_cluster = 25
+    
+            cluster_atoms = core.select_atoms('name '+str(core.atoms.names[0]))
+    
+            dist_array=MDAnalysis.analysis.distances.contact_matrix(cluster_atoms.atoms.positions,cutoff=cutoff_cluster,box=self.u.dimensions)
+    
+            G = nx.from_numpy_matrix(dist_array)
+            clusters=[h for h in nx.connected_components(G)]
+    
+            for c in clusters:
+                if len(c)==max([len(c_) for c_ in clusters]):
+                    slab_resids = [i+1 for i in  c] #from np array to resids
+    
+            ###make sure the core selection doesn't break up and save positions as slab_calc_positions
+            core = core.select_atoms('resid '+str(' '.join([str(i) for i in slab_resids])))
+    
+        ### make whole in z direction if slab/bilayer is split
+    
+        if self.recombine==True:
+    
+            # bonds_original=core.bonds
+            new_bond_atoms = core.select_atoms('name '+str(core.atoms.names[0]))
+            new_bonds=[((int(new_bond_atoms[i].index)),(int(new_bond_atoms[i+1].index))) for i in range(len(new_bond_atoms)-1)]
+            self.u.add_bonds(new_bonds)
+    
+    
+        #just take x,y as is and update z using this protocol
+        #then just duplicate the positions of the solvent etc by taking away the box size in  z and go for certain distance only...
+        #only valid until half way ...
+        
+    
+    
+            slab_calc_postions=np.zeros_like(core.positions)
             
-        elif self.normalisation_run == True:
-            shell_array = cartesian_to_spherical(np.random.uniform(-self.u.dimensions[0]/2,self.u.dimensions[0]/2,size=(self.no_random_points,3)))
+            slab_calc_postions[:,0:2]=core.positions[:,0:2] #x and y positions can be from initial wrapped traj
+    
+            core.unwrap()
+    
+            slab_calc_postions[:,2]=core.positions[:,2]  #z positions can be from the newly unwrapped traj
         
-        r_shell_sphere_tmp=shell_array[:,3]
-        theta_shell_sphere_tmp=shell_array[:,4]
-        phi_shell_sphere_tmp=shell_array[:,5]
-    
-        ###calc shell bins
-        
-        shell_pos=stats.binned_statistic_2d([np.cos(i) for i in theta_shell_sphere_tmp],phi_shell_sphere_tmp,r_shell_sphere_tmp,bins=[np.linspace(-1,1,self.no_bins),np.linspace(-np.pi,np.pi,self.no_bins)],expand_binnumbers=True,statistic='count')
-    
-    
-        ####calc interface positions
-        
-        interface=stats.binned_statistic_2d([np.cos(i) for i in theta_core_tmp],phi_core_tmp,r_core_tmp,bins=[np.linspace(-1,1,self.no_bins),np.linspace(-np.pi,np.pi,self.no_bins)],expand_binnumbers=True,statistic=np.max)###np.max finds edge of core!
-    
-        interface_vals=interface.statistic.copy()
-    
-    
-        while np.count_nonzero(~np.isnan(interface_vals))!=(len(np.linspace(0,box_[0],num=self.no_bins))-1)*(len(np.linspace(0,box_[0],num=self.no_bins))-1):
-            for i in range(len(interface_vals)):
-                for j in range(len(interface_vals)):
-    
-                    if np.isnan(interface_vals[i][j]):
-                        n_i=[i-1,i,i+1]
-                        n_j=[j-1,j,j+1]
-                        interface_vals[i][j]=np.nanmean([interface_vals[divmod(ip,len(interface_vals))[1]][divmod(jp,len(interface_vals))[1]] for ip,jp in product(n_i,n_j)])
-    
-    
-        intrinsic_r,spherical_r = [],[]
-    
-        for i in range(len(r_shell_sphere_tmp)):
-            bin_X=shell_pos.binnumber[0][i]-1
-            bin_Y=shell_pos.binnumber[1][i]-1
-    
-    
-            interface_pos=interface_vals[bin_X][bin_Y]
-            intrinsic_r.append(-interface_pos+r_shell_sphere_tmp[i])
-            spherical_r.append(r_shell_sphere_tmp[i])
+        elif self.recombine==False:
             
+            slab_calc_postions=np.zeros_like(core.positions)
+            slab_calc_postions=core.positions
+            
+        if self.interface=='Lower':
+            
+            interface_grid = stats.binned_statistic_2d(slab_calc_postions[:,0]%self.u.dimensions[0],
+                                                         slab_calc_postions[:,1]%self.u.dimensions[1],
+                                                         slab_calc_postions[:,2],
+                                                          bins=[np.linspace(0,self.u.dimensions[0],self.no_bins),np.linspace(0,self.u.dimensions[1],self.no_bins)],
+                                                         statistic=np.min)
+            interface_grid=interface_grid.statistic
         
-        self.intrinsic_r,self.spherical_r, self.interface_vals = intrinsic_r, spherical_r, interface_vals
-       
-
+        else:
+            
+            interface_grid = stats.binned_statistic_2d(slab_calc_postions[:,0]%self.u.dimensions[0],
+                                                         slab_calc_postions[:,1]%self.u.dimensions[1],
+                                                         slab_calc_postions[:,2],
+                                                          bins=[np.linspace(0,self.u.dimensions[0],self.no_bins),np.linspace(0,self.u.dimensions[1],self.no_bins)],
+                                                         statistic=np.max)
+            interface_grid=interface_grid.statistic
+            
+        selection=self.u.select_atoms(self.density_sel)
+        sel_grid_positions = stats.binned_statistic_2d(selection.positions[:,0]%self.u.dimensions[0],
+                                                     selection.positions[:,1]%self.u.dimensions[1],
+                                                     selection.positions[:,2],
+                                                     bins=[np.linspace(0,self.u.dimensions[0],self.no_bins),np.linspace(0,self.u.dimensions[1],self.no_bins)],
+                                                     statistic='count',
+                                                     expand_binnumbers=True)
+        
+        if self.interpolate_interface==True:
+            box_ = self.u.dimensions
+            
+    
+            while np.count_nonzero(~np.isnan(interface_grid))!=(len(np.linspace(0,box_[0],num=self.no_bins))-1)*(len(np.linspace(0,box_[0],num=self.no_bins))-1):
+                
+                for i in range(len(interface_grid)):
+                    for j in range(len(interface_grid)):
+    
+                        if np.isnan(interface_grid[i][j]):
+                            n_i=[i-1,i,i+1]
+                            n_j=[j-1,j,j+1]
+                            interface_grid[i][j]=np.nanmean([interface_grid[divmod(ip,len(interface_grid))[1]][divmod(jp,len(interface_grid))[1]] for ip,jp in product(n_i,n_j)])
+    
+        
+        intrinsic_z_=[]
+        
+        for atom in range(len(selection)):
+            interface_position = interface_grid[sel_grid_positions.binnumber[0][atom]-1,sel_grid_positions.binnumber[1][atom]-1]
+            intrinsic_z_.append(selection.positions[atom,2]-interface_position)
+    
+        half_z = self.u.trajectory[self.frame].dimensions[2]/2
+        
+        new_intrinsic_z_=[]
+        
+        for atom in intrinsic_z_:
+            
+            if atom > half_z:
+                new_intrinsic_z_.append(atom-half_z*2)
+            elif atom < -half_z:
+    
+                new_intrinsic_z_.append(atom+half_z*2)
+    
+            else:
+                new_intrinsic_z_.append(atom)
+ 
+        self.intrinsic_z_,self.new_intrinsic_z_ ,self.interface_grid =   intrinsic_z_,new_intrinsic_z_,interface_grid
 
  
 
@@ -113,8 +176,7 @@ class ipi:
         """
         .
         """     
-
-        return self.intrinsic_r,self.spherical_r, self.interface_vals
+        return self.new_intrinsic_z_
 
 
 
