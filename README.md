@@ -1,4 +1,4 @@
-# pySoftWhere: Intrinsic Interface Identification for Simulated Soft Matter Nanostructures
+# pySoftWhere: A Python Package for Intrinsic Interface Analysis of Simulated Soft Matter Nanostructures
 
 pySoftWhere (pySW) has the following classes:
 
