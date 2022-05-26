@@ -117,9 +117,3 @@ class icsi:
         return self.intrinsic_r,self.spherical_r, self.interface_vals
 
 
-
-
-
-
-
-
