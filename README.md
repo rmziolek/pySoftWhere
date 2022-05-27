@@ -1,4 +1,4 @@
-# pySoftWhere: A Python Package for Intrinsic Interface Analysis of Simulated Soft Matter Nanostructures
+# pySoftWhere: A Python Package for Analysing Simulated Soft Matter Nanostructures at Interfaces
 
 pySoftWhere (pySW) has the following classes:
 
@@ -12,5 +12,6 @@ pySW can be used to calculate the following (with respect to both planar and sph
 2. Track positions of solutes with repsect to the interface (useful for tracking drug molecules, etc.)
 3. Intrinsic profiles of any calculated quantity (hydrogen bonds, instantanous mobility, orientation, hydration, etc.)
 
-pySW is relatively flexible, so that the base algorithms ICSI and IPI can be used as required to perform new analysis tasks.
+To do: setup.py, documents/tutorials, add any aux functions (stacking, interface network analysis, 
+
 
