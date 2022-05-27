@@ -1,4 +1,4 @@
-# pySoftWhere: A Python Package for Analysing Simulated Soft Matter Nanostructures at Interfaces
+# pySoftWhere: A Python Package for Analysing Soft Matter Nanostructure Interfaces
 
 pySoftWhere (pySW) has the following classes:
 
