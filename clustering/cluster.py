@@ -133,8 +133,12 @@ class make_cluster_whole:
         
         cluster_sel = self.u.select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
         core_sel = self.u.select_atoms(self.core_selection).select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
-        shell_sel = self.u.select_atoms(self.shell_selection).select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
         
+        if self.solvent==False:
+            shell_sel = self.u.select_atoms(self.shell_selection).select_atoms('resid '+" ".join([str(i) for i in self.cluster_resids]))
+        elif self.solvent==True:
+            shell_sel = self.u.select_atoms(self.shell_selection)
+
         cluster_atoms_positions=cluster_sel.positions.copy()
         core_sel_atoms_positions=core_sel.positions.copy()
         shell_sel_atoms_positions=shell_sel.positions.copy()
@@ -184,14 +188,12 @@ class make_cluster_whole:
                             shell_sel_atoms_positions[atom][dimension]=shell_sel_atoms_positions[atom][dimension]-box[dimension]
     
     
-            if self.solvent!=False:
-                for atom in range(len(shell_sel_atoms_positions)):
-                    if shell_sel_atoms_positions[atom][dimension]>move_water:
-                        shell_sel_atoms_positions[atom][dimension]=shell_sel_atoms_positions[atom][dimension]-box[dimension]
-            else:
-                solvent_atoms_positions=0
+                if self.solvent==True:
+                    for atom in range(len(shell_sel_atoms_positions)):
+                        if shell_sel_atoms_positions[atom][dimension]>move_water:
+                            shell_sel_atoms_positions[atom][dimension]=shell_sel_atoms_positions[atom][dimension]-box[dimension]
                 
-        self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions,self.solvent_atoms_positions = cluster_atoms_positions,core_sel_atoms_positions,shell_sel_atoms_positions,solvent_atoms_positions
+        self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions = cluster_atoms_positions,core_sel_atoms_positions,shell_sel_atoms_positions
      
 
 
@@ -201,4 +203,4 @@ class make_cluster_whole:
         .
         """     
 
-        return self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions,self.solvent_atoms_positions
+        return self.cluster_atoms_positions,self.core_sel_atoms_positions,self.shell_sel_atoms_positions
