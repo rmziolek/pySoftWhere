@@ -1,4 +1,4 @@
-# pySoftWhere: pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
+# pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
 
 pySoftWhere (pySW) has the following classes:
 
