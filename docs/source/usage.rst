@@ -6,10 +6,11 @@ Usage
 Installation
 ------------
 
-pySoftWhere is available to download from `GitHub<https://github.com/rmziolek/pySoftWhere>`_
+pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/pySoftWhere>`_
+
 .. code-block:: console
 
-   (.venv) $ pip install lumache
+   (pysw) 
 
 Creating recipes
 ----------------
