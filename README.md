@@ -12,6 +12,5 @@ Using these different algorithms, pySW can be used to calculate the following (w
 2. Track positions of solutes with repsect to the interface (useful for tracking drug molecules, etc.)
 3. Intrinsic profiles of any calculated quantity (hydrogen bonds, instantanous mobility, orientation, hydration, etc.)
 
-To do: setup.py, documents/tutorials, add any aux functions (ecc/rg/hydro radius) 
 
 
