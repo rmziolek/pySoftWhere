@@ -13,6 +13,7 @@ Importing pySoftWhere
     import numpy as np
     import sys
 
+
 Set the directory where pySoftWhere is located
 
 .. code: ipython3

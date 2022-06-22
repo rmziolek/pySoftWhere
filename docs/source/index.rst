@@ -20,4 +20,4 @@ Contents
 .. toctree::
 
    usage
-   api
+   basics
