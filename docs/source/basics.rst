@@ -16,7 +16,7 @@ Importing pySoftWhere
 
 Set the directory where pySoftWhere is located
 
-.. code-block: ipython3
+.. code-block:: ipython3
 
     sys.path.append('Users/name/pysoftwhere') 
 
