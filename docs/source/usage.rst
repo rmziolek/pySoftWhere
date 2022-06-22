@@ -8,12 +8,29 @@ Installation
 
 pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/pySoftWhere>`_
 
-It is recommended to create a new virtual environment in which the pySoftWhere dependencies can be installed
+1. It is recommended to create a new virtual environment in which the pySoftWhere dependencies can be installed
 
-.. 
-   code-block:: console
+.. code-block:: console
+   
+   conda create --name pysw
 
-..
-   (pysw) 
+2. Make a directory to download pySoftWhere and change to this directory
 
+.. code-block:: console
+   
+   mkdir pysoftwhere
+   cd pysoftwhere
 
+3. Download pySoftWhere from Github
+
+.. code-block:: console
+   
+   (pysw) git clone https://github.com/rmziolek/pySoftWhere.git 
+
+4. Install the pySoftWhere and its dependencies
+
+.. code-block:: console
+   
+   (pysw) pip install -e .
+
+That's it, you're ready to use pySoftWhere!
