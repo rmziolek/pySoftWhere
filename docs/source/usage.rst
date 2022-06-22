@@ -13,13 +13,15 @@ pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/p
 .. code-block:: console
    
    conda create --name pysw
+   conda activate pysw
+
 
 2. Make a directory to download pySoftWhere and change to this directory
 
 .. code-block:: console
    
-   mkdir pysoftwhere
-   cd pysoftwhere
+   (pysw) mkdir pysoftwhere
+   (pysw) cd pysoftwhere
 
 3. Download pySoftWhere from Github
 
@@ -27,7 +29,7 @@ pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/p
    
    (pysw) git clone https://github.com/rmziolek/pySoftWhere.git 
 
-4. Install the pySoftWhere and its dependencies
+4. Install pySoftWhere dependencies
 
 .. code-block:: console
    
