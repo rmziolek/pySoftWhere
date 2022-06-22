@@ -6,7 +6,7 @@ Basic Use
 Importing pySoftWhere
 ------------
 
-.. code-block:: ipython3
+.. code-block:: python3
 
     import MDAnalysis as mda
     import matplotlib.pyplot as plt
@@ -16,13 +16,13 @@ Importing pySoftWhere
 
 Set the directory where pySoftWhere is located
 
-.. code-block:: ipython3
+.. code-block:: python3
 
     sys.path.append('Users/name/pysoftwhere') 
 
 Then import the pySoftWhere functions
 
-.. code-block:: ipython3
+.. code-block:: python3
 
     import clustering.cluster as pySW_Cluster
     import ICSI.icsi as pySW_ICSI
