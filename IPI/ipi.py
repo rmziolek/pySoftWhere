@@ -176,7 +176,7 @@ class ipi:
         """
         .
         """     
-        return self.new_intrinsic_z_
+        return self.new_intrinsic_z_,self.interface_grid
 
 
 
