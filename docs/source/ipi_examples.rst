@@ -32,10 +32,10 @@ Now call ``pysoftwhere.IPI.ipi()`` to calculate the intrinsic density for multip
     intrinsic_z_ = []
     interface_vals_ = []
     
-    for sim_frame in range(0,100):
+    for frame_sel in range(0,100):
     
         intrinsic_z,interface_vals  =  pysoftwhere.IPI.ipi(u,
-                                                           frame=-1,
+                                                           frame=frame_sel,
                                                            core_sel='resname UNK and prop mass >2',
                                                            density_sel='name OW',
                                                            interface='Lower',                        
@@ -65,31 +65,35 @@ Now call ``pysoftwhere.IPI.ipi()`` to calculate the intrinsic positions of solut
 
 .. code-block:: python3
     
-   ''' 
-   u:           an MDAnalysis Universe that contains bond information
-   core_sel:    an MDAnalysis atom selection of the atoms used to construct the intrinsic interface
-   density_sel: an MDAnalysis atom selection of the atoms whose intrinsic positions will be calculated
-   interface:   'Lower' or 'Upper' - which interface of the core_sel to calculate with respect to
-   no_bins:     number of grid edges to use in each lateral dimension
-   recombine:   'True' or 'False' - set 'True' to recombine core_sel over the PBC in the vertical direction
-   cluster:     'True' or 'False' - set 'True' to check if any core_sel molecules have diffused away from the main selection and remove them from the analysis
-   interpolate_interface: 'True' or 'False' - set "True' to linearly interpolate the interface if it is patchy
-   '''
+    
+    ''' 
+    u:           an MDAnalysis Universe that contains bond information
+    core_sel:    an MDAnalysis atom selection of the atoms used to construct the intrinsic interface
+    density_sel: an MDAnalysis atom selection of the atoms whose intrinsic positions will be calculated
+    interface:   'Lower' or 'Upper' - which interface of the core_sel to calculate with respect to
+    no_bins:     number of grid edges to use in each lateral dimension
+    recombine:   'True' or 'False' - set 'True' to recombine core_sel over the PBC in the vertical direction
+    cluster:     'True' or 'False' - set 'True' to check if any core_sel molecules have diffused away from the main selection and remove them from the analysis
+    interpolate_interface: 'True' or 'False' - set "True' to linearly interpolate the interface if it is patchy
+    '''
 
-intrinsic_z_ = []
-interface_vals_ = []
+    intrinsic_z_ = []
+    interface_vals_ = []
+    
+    for frame_sel in range(0,100):
+    
+        intrinsic_z,interface_vals  =  pysoftwhere.IPI.ipi(u,
+                                                           frame=frame_sel,
+                                                           core_sel='resname SLAB and prop mass >2',
+                                                           density_sel='resname SOLUTE and name C1',
+                                                           interface='Lower',                        
+                                                           no_bins=51,
+                                                           recombine=True,                          
+                                                           cluster=True,                            
+                                                           interpolate_interface=False)()           
+        intrinsic_z_.append(intrinsic_z)
 
-for sim_frame in range(0,100):
+Now we can easily access the intrinsic solute positions as a function of time.
+ 
 
-    intrinsic_z,interface_vals  =  pysoftwhere.IPI.ipi(u,
-                                                       frame=-1,
-                                                       core_sel='resname UNK and prop mass >2',
-                                                       density_sel='name OW',
-                                                       interface='Lower',                        
-                                                       no_bins=51,
-                                                       recombine=True,                          
-                                                       cluster=True,                            
-                                                       interpolate_interface=False)()           
-    intrinsic_z_.append(intrinsic_z)
-    interface_vals_.append(interface_vals)
 
