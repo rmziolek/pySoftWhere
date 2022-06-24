@@ -98,8 +98,8 @@ Now we can easily access the intrinsic solute positions as a function of time. T
 
 .. _ipi_profiles:
 
-Intrinsic Profiles with IPI
-----------------------------
+Custom Intrinsic Profiles with IPI
+----------------------------------
 
 We can use ``pysoftwhere.IPI.ipi()`` to easily create intrinsic profiles of any quantity that we may wish to calculate. For example, intrinsic profiles can be constructed for the number of hydrogen bonds in the solute, hydration number, solute mobility, orientation, and so. 
 
