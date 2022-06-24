@@ -40,5 +40,11 @@ Installation
    
    (pysw) pip install -e .
 
+5. You may need to add the installation directory path to your .bashrc or .zhsrc
+
+.. code-block:: console
+    
+    PATH=$PATH:/Users/<path to>/pySoftWhere	
+
 That's it, you're ready to use pySoftWhere
 
