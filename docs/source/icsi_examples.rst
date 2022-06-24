@@ -93,11 +93,11 @@ Firstly, define an MDAnalysis Universe
 .. _ipi_tracking:
 
 
-Tracking solute molecules with IPI
+Tracking solute molecules with ICSI
 ----------------------------------
 
 
-Now call ``pysoftwhere.IPI.ipi()`` to calculate the intrinsic positions of solute atoms for multiple frames
+Now call ``pysoftwhere.ICSI.icsi()`` to calculate the intrinsic positions of solute atoms for multiple frames
 
 .. code-block:: python3
     
