@@ -1,5 +1,5 @@
 Basic Use
-=====
+=========
 
 .. _importing:
 
@@ -74,7 +74,7 @@ The ``pysoftwhere.IPI.ipi()`` function returns two results when called. These ar
 .. _icsi_simple:
 
 Intrinsic Core-Shell Interface (ICSI)
-----------------------------------
+--------------------------------------
 
 Firstly, define an MDAnalysis Universe
 
@@ -110,4 +110,4 @@ Now call ``pysoftwhere.ICSI.icsi()`` to calculate the intrinsic density for a si
                                     no_random_points=n_rand_points,
                                     normalisation_run=False)()
 
-The ``pysoftwhere.IPI.ipi()`` function returns two results when called. These are ``intrinsic_z``,  a list of the intrinsic positions of atoms selected in ``density_sel``, and ``interface``, an array containing the z-positions of the intrinsic interface. 
+The ``pysoftwhere.IPI.ipi()`` function returns three results when called. These are ``intrinsic_r``,  a list of the intrinsic positions of atoms selected in ``density_sel``, ``spherical_r``, the radial distance of each ``density_sel`` atom to the nanoparticle center of mass,  and ``icsi_vals``, an array containing the r-positions of the intrinsic core-shell interface. 
