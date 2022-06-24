@@ -23,4 +23,3 @@ Contents
    basics
    ipi_examples
    icsi_examples
-   misc_examples
