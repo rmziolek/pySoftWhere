@@ -5,6 +5,11 @@ pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
 
 **pySoftWhere** is a Python library for analyzing interfaces of soft matter nanostructures, such as *micelles, nanoparticles, monolayers, and polymer films*.	
 
+Using pySoftWhere
+-----------------
+
+Please consult the documentation on `Read the Docs<https://pysoftwhere.readthedocs.io/en/latest/index.html>`_
+
 Installation
 ------------
 
