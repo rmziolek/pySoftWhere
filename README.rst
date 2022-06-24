@@ -8,7 +8,7 @@ pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
 Using pySoftWhere
 -----------------
 
-Please consult the documentation on `Read the Docs<https://pysoftwhere.readthedocs.io/en/latest/index.html>`_
+Please consult the documentation on `Read the Docs <https://pysoftwhere.readthedocs.io/en/latest/index.html>`_
 
 Installation
 ------------
