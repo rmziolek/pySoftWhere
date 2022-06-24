@@ -1,8 +1,8 @@
-Intrinsic Planar Interface (IPI)
+Intrinsic Core-Shell Interface (ICSI)
 =========
 
 
-.. _ipi_density:
+.. _icsi_density:
 
 Calculating an intrinsic density with ICSI
 ----------------------------------
