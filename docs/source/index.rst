@@ -8,7 +8,7 @@ Consult the :doc:`usage` section to install the package
 
 .. note::
 
-   This project is under active development.
+   This documentation is under active development.
 
 Contents
 --------
