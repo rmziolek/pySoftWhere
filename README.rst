@@ -1,6 +1,4 @@
 .. image:: https://readthedocs.org/projects/pysoftwhere/badge/?version=latest
-:target: https://pysoftwhere.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
 
 pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
 =========================================================================
