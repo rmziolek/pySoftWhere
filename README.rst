@@ -5,17 +5,37 @@ pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
 
 **pySoftWhere** is a Python library for analyzing interfaces of soft matter nanostructures, such as *micelles, nanoparticles, monolayers, and polymer films*.	
 
-**pySoftWhere** has the following classes:
+Installation
+------------
 
-1. ICSI (Intrinsic Core-Shell Interface): an algorithm for calculating the core-shell interface of polymer (or surfactant, etc.) micelles
-2. IPI (Intrinsic Planar Interface): an algorithm for calculating the interface between a monolayer (or bilayer, polymer slab, etc.) and surrounding solvent (or secondary phase)
-3. Clustering: algorithms to find the the distribution of clusters and largest cluster in a simulation. Also contains a robust micelle unwrapping code.
+pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/pySoftWhere>`_
 
-Using these different algorithms, pySW can be used to calculate the following (with respect to both planar and spherical nanostructures):
+1. It is recommended to create a new virtual environment in which the pySoftWhere dependencies can be installed
 
-1. Intrinsic density profiles
-2. Track positions of solutes with repsect to the interface (useful for tracking drug molecules, etc.)
-3. Intrinsic profiles of any calculated quantity (hydrogen bonds, instantanous mobility, orientation, hydration, etc.)
+.. code-block:: console
+   
+   conda create --name pysw
+   conda activate pysw
 
 
+2. Make a directory to download pySoftWhere and change to this directory
+
+.. code-block:: console
+   
+   (pysw) mkdir pysoftwhere
+   (pysw) cd pysoftwhere
+
+3. Download pySoftWhere from Github
+
+.. code-block:: console
+   
+   (pysw) git clone https://github.com/rmziolek/pySoftWhere.git 
+
+4. Install pySoftWhere and its dependencies if required
+
+.. code-block:: console
+   
+   (pysw) pip install -e .
+
+That's it, you're ready to use pySoftWhere
 

@@ -29,10 +29,10 @@ pySoftWhere is available to download from `GitHub <https://github.com/rmziolek/p
    
    (pysw) git clone https://github.com/rmziolek/pySoftWhere.git 
 
-4. Install pySoftWhere dependencies
+4. Install pySoftWhere and its dependencies if required
 
 .. code-block:: console
    
    (pysw) pip install -e .
 
-That's it, you're ready to use pySoftWhere!
+That's it, you're ready to use pySoftWhere
