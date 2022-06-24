@@ -1,6 +1,13 @@
-# pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
+.. image:: https://readthedocs.org/projects/pysoftwhere/badge/?version=latest
+:target: https://pysoftwhere.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
 
-pySoftWhere (pySW) has the following classes:
+pySoftWhere:  Automated Interface Analysis of Soft Matter Nanostructures
+=========================================================================
+
+**pySoftWhere** is a Python library for analyzing interfaces of soft matter nanostructures, such as *micelles, nanoparticles, monolayers, and polymer films*.	
+
+**pySoftWhere** has the following classes:
 
 1. ICSI (Intrinsic Core-Shell Interface): an algorithm for calculating the core-shell interface of polymer (or surfactant, etc.) micelles
 2. IPI (Intrinsic Planar Interface): an algorithm for calculating the interface between a monolayer (or bilayer, polymer slab, etc.) and surrounding solvent (or secondary phase)
