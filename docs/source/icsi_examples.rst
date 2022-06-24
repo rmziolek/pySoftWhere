@@ -19,74 +19,75 @@ Firstly, define an MDAnalysis Universe
 .. code-block:: python3
     
 
-### create lists to save data
-intrinsic_r_tx114,intrinsic_r_rand_tx114 , box_size = [] , [] , []
+    ''' create lists to save data '''
 
-
-for ts in u.trajectory[start:stop:skip]:
+    intrinsic_r_tx114,intrinsic_r_rand_tx114 , box_size = [] , [] , []
     
-    #find the largest cluster (this is the micelle)
     
-    largest_cluster_resids=pysw_cluster.find_largest_cluster(u,
-                                   frame=ts.frame,
-                                   selection='name C*',
-                                   cutoff_distance=10,
-                                   define_clustering_atoms=False)()
-
-    #unwrap the micelle coordinates
-    
-    cluster_atoms_positions,core_sel_atoms_positions,shell_sel_atoms_positions=pysw_cluster.make_cluster_whole(u,
-                                    frame = ts.frame,
-                                    cluster_resids  = largest_cluster_resids,
-                                    core_selection  = micelle_core,
-                                    shell_selection = micelle_shell)()
-    
-    #calculate the intrinsic positions of the micelle shell using ICSI
-    
-    intrinsic_r, spherical_r, icsi_vals = pysw_icsi.icsi(u, 
-                                                        
-                                    cluster_resids=largest_cluster_resids,
-                                    cluster_atoms_positions=cluster_atoms_positions,
-                                    core_sel_atoms_positions=core_sel_atoms_positions,
-                                    shell_sel_atoms_positions=shell_sel_atoms_positions,
-                                    frame=ts.frame,
-                                    no_bins=11,
-                                    no_random_points=n_rand_points,
-                                    normalisation_run=False)()
-
-    #bin and save the intrinsic positions 
-    
-    intrinsic_r_tx114.append(stats.binned_statistic(intrinsic_r,intrinsic_r,bins=np.arange(-40.5,150,0.5),statistic='count').statistic)
+    for ts in u.trajectory[start:stop:skip]:
         
-    #calculate the normalisation factor 
+        #find the largest cluster (this is the micelle)
+        
+        largest_cluster_resids=pysw_cluster.find_largest_cluster(u,
+                                       frame=ts.frame,
+                                       selection='name C*',
+                                       cutoff_distance=10,
+                                       define_clustering_atoms=False)()
     
-    intrinsic_r_rand, spherical_r_rand, icsi_vals = pysw_icsi.icsi(u, 
-                                                        
-                                    cluster_resids=largest_cluster_resids,
-                                    cluster_atoms_positions=cluster_atoms_positions,
-                                    core_sel_atoms_positions=core_sel_atoms_positions,
-                                    shell_sel_atoms_positions=shell_sel_atoms_positions,
-                                    frame=ts.frame,
-                                    no_bins=11,
-                                    no_random_points=n_rand_points,
-                                    normalisation_run=True)()
+        #unwrap the micelle coordinates
+        
+        cluster_atoms_positions,core_sel_atoms_positions,shell_sel_atoms_positions=pysw_cluster.make_cluster_whole(u,
+                                        frame = ts.frame,
+                                        cluster_resids  = largest_cluster_resids,
+                                        core_selection  = micelle_core,
+                                        shell_selection = micelle_shell)()
+        
+        #calculate the intrinsic positions of the micelle shell using ICSI
+        
+        intrinsic_r, spherical_r, icsi_vals = pysw_icsi.icsi(u, 
+                                                            
+                                        cluster_resids=largest_cluster_resids,
+                                        cluster_atoms_positions=cluster_atoms_positions,
+                                        core_sel_atoms_positions=core_sel_atoms_positions,
+                                        shell_sel_atoms_positions=shell_sel_atoms_positions,
+                                        frame=ts.frame,
+                                        no_bins=11,
+                                        no_random_points=n_rand_points,
+                                        normalisation_run=False)()
     
-    #bin and save the normalisation positions 
-
-    intrinsic_r_rand_tx114.append(stats.binned_statistic(intrinsic_r_rand,intrinsic_r_rand,bins=np.arange(-40.5,150,0.5),statistic='count').statistic)
+        #bin and save the intrinsic positions 
+        
+        intrinsic_r_tx114.append(stats.binned_statistic(intrinsic_r,intrinsic_r,bins=np.arange(-40.5,150,0.5),statistic='count').statistic)
+            
+        #calculate the normalisation factor 
+        
+        intrinsic_r_rand, spherical_r_rand, icsi_vals = pysw_icsi.icsi(u, 
+                                                            
+                                        cluster_resids=largest_cluster_resids,
+                                        cluster_atoms_positions=cluster_atoms_positions,
+                                        core_sel_atoms_positions=core_sel_atoms_positions,
+                                        shell_sel_atoms_positions=shell_sel_atoms_positions,
+                                        frame=ts.frame,
+                                        no_bins=11,
+                                        no_random_points=n_rand_points,
+                                        normalisation_run=True)()
+        
+        #bin and save the normalisation positions 
     
-    #save the box size for each timestep
-
-    box_size.append(u.dimensions[0]*u.dimensions[1]*u.dimensions[2])
+        intrinsic_r_rand_tx114.append(stats.binned_statistic(intrinsic_r_rand,intrinsic_r_rand,bins=np.arange(-40.5,150,0.5),statistic='count').statistic)
+        
+        #save the box size for each timestep
     
-    print(ts)
+        box_size.append(u.dimensions[0]*u.dimensions[1]*u.dimensions[2])
+        
+        print(ts)
+        
+        
+    ###calculate average count for the intrinsic distance vector - CHECK!
+    intrinsic_r_tx114_profile=np.sum(np.array(intrinsic_r_tx114),axis=0) / len(np.arange(start,stop,skip))
     
-    
-###calculate average count for the intrinsic distance vector - CHECK!
-intrinsic_r_tx114_profile=np.sum(np.array(intrinsic_r_tx114),axis=0) / len(np.arange(start,stop,skip))
-
-###calculate the normalisation vector
-S_bar=np.sum(np.array(intrinsic_r_rand_tx114),axis=0) *np.mean(box_size) / (len(np.arange(start,stop,skip))*n_rand_points)
+    ###calculate the normalisation vector
+    S_bar=np.sum(np.array(intrinsic_r_rand_tx114),axis=0) *np.mean(box_size) / (len(np.arange(start,stop,skip))*n_rand_points)
 
 
 .. _ipi_tracking:
