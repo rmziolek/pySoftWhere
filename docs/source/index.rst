@@ -21,3 +21,6 @@ Contents
 
    usage
    basics
+   ipi_examples
+   icsi_examples
+   misc_examples
