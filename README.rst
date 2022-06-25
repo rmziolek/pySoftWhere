@@ -13,7 +13,7 @@ Please consult the documentation on `Read the Docs <https://pysoftwhere.readthed
 Installation
 ------------
 
-1. It is recommended to create a new virtual environment in which the pySoftWhere dependencies can be installed
+1. It is recommended to create a new virtual environment in which the pySoftWhere dependencies can be installed, for example
 
 .. code-block:: console
    
@@ -34,13 +34,13 @@ Installation
    
    (pysw) git clone https://github.com/rmziolek/pySoftWhere.git 
 
-4. Install pySoftWhere and its dependencies if required
+4. Install pySoftWhere and its dependencies as required
 
 .. code-block:: console
    
    (pysw) pip install -e .
 
-5. You may need to add the installation directory path to your .bashrc or .zhsrc
+5. You may need to add the installation directory path to your .bashrc or .zshrc file
 
 .. code-block:: console
     
