@@ -37,7 +37,8 @@ Installation
 4. Install pySoftWhere and its dependencies as required
 
 .. code-block:: console
-   
+
+   (pysw_env) cd pySoftWhere
    (pysw_env) pip install -e .
 
 5. You may need to add the pySoftWhere installation directory to your .bashrc or .zshrc file
@@ -46,4 +47,4 @@ Installation
     
     PATH=$PATH:/<path to>/pysw_dir	
 
-That's it, you're ready to use pySoftWhere (remember to activate the pysw_dir)
+That's it, you're ready to use pySoftWhere (remember to activate pysw_env!)
