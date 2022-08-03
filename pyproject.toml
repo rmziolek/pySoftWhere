@@ -4,5 +4,5 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "pySoftWhere"
-authors = [{name = "Rob Ziolek", email = "robert.ziolek[at]kcl.ac.uk"}]
-dynamic = ["version", "description"]
+#authors = [{name = "Rob Ziolek", email = "robert.ziolek[at]kcl.ac.uk"}]
+#dynamic = ["version", "description"]

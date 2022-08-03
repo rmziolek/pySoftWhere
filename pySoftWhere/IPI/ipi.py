@@ -132,10 +132,12 @@ class ipi:
                                                      statistic='count',
                                                      expand_binnumbers=True)
         
+        pc_coverage=1
         if self.interpolate_interface==True:
             box_ = self.u.dimensions
             
-    
+            pc_coverage = np.count_nonzero(~np.isnan(interface_grid)) / (len(np.linspace(0,box_[0],num=self.no_bins))-1)*(len(np.linspace(0,box_[0],num=self.no_bins))-1)
+
             while np.count_nonzero(~np.isnan(interface_grid))!=(len(np.linspace(0,box_[0],num=self.no_bins))-1)*(len(np.linspace(0,box_[0],num=self.no_bins))-1):
                 
                 for i in range(len(interface_grid)):
@@ -168,7 +170,7 @@ class ipi:
             else:
                 new_intrinsic_z_.append(atom)
  
-        self.intrinsic_z_,self.new_intrinsic_z_ ,self.interface_grid =   intrinsic_z_,new_intrinsic_z_,interface_grid
+        self.intrinsic_z_,self.new_intrinsic_z_ ,self.interface_grid,self.pc_coverage =   intrinsic_z_,new_intrinsic_z_,interface_grid,pc_coverage
 
  
 
@@ -176,7 +178,7 @@ class ipi:
         """
         .
         """     
-        return self.new_intrinsic_z_,self.interface_grid
+        return self.new_intrinsic_z_,self.interface_grid,self.pc_coverage
 
 
 
